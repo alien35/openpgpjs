@@ -37,7 +37,11 @@ let pubKey;
 tryTests('Async Proxy', tests, {
   if: typeof window !== 'undefined' && window.Worker && window.MessageChannel,
   before: async function() {
-    await openpgp.initWorker({ path:'../dist/openpgp.worker.js' });
+    try {
+      await openpgp.initWorker({ path:'../dist/openpgp.worker.js' });
+    } catch (e) {
+      openpgp.util.print_debug_error(e);
+    }
     pubKey = (await openpgp.key.readArmored(pub_key)).keys[0];
   },
   after: async function() {
